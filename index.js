@@ -7,9 +7,10 @@ const session = require('express-session');
 var app = express();
 var roomName = '';
 const nameBot = "BotChat";
+const port = process.env.PORT || 3000;
 
-var server = app.listen(3030, function () {				//ponemos en marcha nuestro server en el puerto 3030
-	console.log("Servidor en marcha, port 3030.");
+var server = app.listen(port, function () {				//ponemos en marcha nuestro server en el puerto 3030
+	console.log("Servidor en marcha, port.", port);
 });
 
 var io = socket(server);
