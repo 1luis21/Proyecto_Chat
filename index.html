@@ -21,197 +21,65 @@
         crossorigin="anonymous"></script>
     <meta name="theme-color" content="#7952b3">
 
-
-    <style>
-        html,
-        body {
-            height: 100%;
-        }
-
-        body {
-            display: flex;
-            align-items: center;
-            padding-top: 40px;
-            padding-bottom: 40px;
-            background-color: #f5f5f5;
-        }
-
-        .form-signin {
-            width: 100%;
-            max-width: 330px;
-            padding: 15px;
-            margin: auto;
-        }
-
-        body {
-            font: 12px arial;
-            color: #222;
-            text-align: center;
-            padding: 35px;
-        }
-
-        form,
-        p,
-        span {
-            margin: 0;
-            padding: 0;
-        }
-
-        input {
-            font: 12px arial;
-        }
-
-        a {
-            color: #0000FF;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        #wrapper,
-        #loginform {
-            margin: 0 auto;
-            padding-bottom: 25px;
-            background: #EBF4FB;
-            width: 504px;
-            border: 1px solid #ACD8F0;
-        }
-
-        #loginform {
-            padding-top: 18px;
-        }
-
-        #loginform p {
-            margin: 5px;
-        }
-
-        #chatbox {
-            text-align: left;
-            margin: 0 auto;
-            margin-bottom: 25px;
-            padding: 10px;
-            background: #fff;
-            height: 270px;
-            width: 430px;
-            border: 1px solid #ACD8F0;
-            overflow: auto;
-        }
-
-        #usermsg {
-            width: 395px;
-            border: 1px solid #ACD8F0;
-        }
-
-        #submit {
-            width: 60px;
-        }
-
-        .error {
-            color: #ff0000;
-        }
-
-        #menu {
-            padding: 12.5px 25px 12.5px 25px;
-        }
-
-        .welcome {
-            float: left;
-        }
-
-        .logout {
-            float: right;
-        }
-
-        .msgln {
-            margin: 0 0 2px 0;
-        }
+    <meta name="theme-color" content="#7952b3">
 
 
-        .form-signin .checkbox {
-            font-weight: 400;
-        }
 
-        .form-signin .form-floating:focus-within {
-            z-index: 2;
-        }
-
-        .form-signin input[type="email"] {
-            margin-bottom: -1px;
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        .form-signin input[type="password"] {
-            margin-bottom: 10px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-        }
-
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-    </style>
-
-
-    <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
 </head>
 
-<body class="text-center">
-    <main class="form-signin">
-        <h1 class="h2 mb-3 fw-normal">Iniciar sesión</h1>
+<body>
 
-        <div class="form-floating">
-            <input type="text" class="form-control bg-light" id="userName" placeholder="name@example.com"
-                name="username">
-            <label for="floatingInput">Nombre de usuario</label>
+    <form>
+        <h1>Iniciar sesión</h1>
+
+
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <label class="form-label">Nombre de usuario</label>
+                <input type="text" class="form-control bg-light" id="userName" placeholder="Usuario" name="username">
+
+
+                <label class="form-label">Contraseña</label>
+                <input type="password" class="form-control bg-light" id="Password" placeholder="Contraseña"
+                    name="password">
+
+                <br>
+
+                <select class="form-select form-select-sm bg-light" aria-label=".form-select-lg example" name="rooms"
+                    id="rooms">
+                    <option selected>Selecciona la sala a ingresar</option>
+                </select>
+
+                <br>
+                <button class="w-100 btn btn-lg btn-primary" type="button" id="Login">Entrar</button>
+                <button class="w-100 btn btn-lg btn-secondary" type="button" id="registrar" data-toggle="modal"
+                    data-target="#registro">Registrar</button>
+                <p class="mt-5 mb-3 text-muted">&copy; Chat NodeJS and Socket.io</p>
+            </div>
         </div>
-        <div class="form-floating">
-            <input type="password" class="form-control bg-light" id="Password" placeholder="Password" name="password">
-            <label for="floatingPassword">Contraseña</label>
-        </div>
-        <div class="form-floating">
-            <select class="form-select form-select-sm bg-light" aria-label=".form-select-lg example" name="rooms"
-                id="rooms">
-                <option selected>Selecciona la sala a ingresar</option>
+    </form>
+
+
+    <div id="wrapper" class="card" style="width: 45rem;">
+        <div class="card-body">
+            <div id="menu">
+                <p class="bienvenido"> Bienvenido, <b id="usernameTag"></b>, Correo: <b id="emailUser">,</b>, a la sala:
+                    <b id="SalaNombre"></b>
+                </p>
+                <p class="logout d-flex justify-content-end" ><a id="exit" href="/">Salir del chat</a></p>
+            </div>
+
+            <div id="chatbox">
+                <!-- Caja del chat que contendrá todos los mensajes. -->
+            </div>
+
+            <input class="form-control" name="usermsg" type="text" id="mensaje" size="75" />
+            <input class="btn btn-sm btn-outline-info" type="button" name="submitmsg" id="enviarMensaje"
+                value="Enviar Mensaje" />
+            <select class="form-group btn btn-sm btn-outline-secondary" name="roomsCambio" id="roomsCambio">
+                <option selected>Cambiar de sala</option>
             </select>
         </div>
-        <br>
-        <button class="w-100 btn btn-lg btn-primary" type="button" id="Login">Entrar</button>
-        <button class="w-100 btn btn-lg btn-secondary" type="button" id="registrar" data-toggle="modal"
-            data-target="#registro">Registrar</button>
-        <p class="mt-5 mb-3 text-muted">&copy; Chat NodeJS and Socket.io</p>
-    </main>
-
-    <div id="wrapper" style="display: none;" class="background-color: #9BD8FB">
-        <div id="menu">
-            <p class="bienvenido"> Bienvenido, <b id="usernameTag"></b>, Correo: <b id="emailUser">,</b>, a la sala:
-                <b id="SalaNombre"></b>
-            </p>
-            <p class="logout "><a id="exit" href="/">Salir del chat</a></p>
-        </div>
-
-        <div id="chatbox">
-            <!-- Caja del chat que contendrá todos los mensajes. -->
-        </div>
-
-        <input name="usermsg" type="text" id="mensaje" size="75" />
-        <input class="btn btn-sm btn-outline-info" type="button" name="submitmsg" id="enviarMensaje" value="Enviar Mensaje" />
-        <select class="form-group btn btn-sm btn-outline-secondary" name="roomsCambio" id="roomsCambio">
-            <option selected>Cambiar de sala</option>
-        </select>
     </div>
 
     <!--aqui va lo de cambio de sala-->
