@@ -1,4 +1,4 @@
-const express = require('express');  //Se definen librerias que usaremos a lo largo del proyecto
+const express = require('express');
 const socket = require('socket.io');
 const mysql = require('mysql');
 const cookieParser = require('cookie-parser');
@@ -9,13 +9,13 @@ var roomName = '';
 const nameBot = "BotChat";
 const port = process.env.PORT || 3000;
 
-var server = app.listen(port, function () {				//ponemos en marcha nuestro server en el puerto 3030
+var server = app.listen(port, function () {
 	console.log("Servidor en marcha, port.", port);
 });
 
 var io = socket(server);
 
-var sessionMiddleware = session({				//Definimos middleware para el chat
+var sessionMiddleware = session({
 	secret: "keyUltraSecret",
 	resave: true,
 	saveUninitialized: true
@@ -35,8 +35,7 @@ const config = {
 	"base": "chat"
 };
 
-var db = mysql.createConnection({				//Se configura la conexion a la base de datos de acuerdo a los datos que 
-	// creamos en la base con SQL
+var db = mysql.createConnection({
 	host: 'localhost',
 	user: 'root',
 	password: '',
@@ -59,11 +58,11 @@ io.on('connection', function (socket) {
 
 	if (req.session.userID != null) {
 		db.query("SELECT * FROM users WHERE id=?", [req.session.userID], function (err, rows, fields) {
-			console.log('Sesión iniciada con el UserID: ' + req.session.userID + ' Y nombre de usuario: ' + req.session.Username);	//Mandamos un mensaje en caso de que se logre iniciar sesion
-			socket.emit("logged_in", { user: req.session.Username, email: req.session.correo });	//Mandamos el nombre de usuario, email y correo
+			console.log('Sesión iniciada con el UserID: ' + req.session.userID + ' Y nombre de usuario: ' + req.session.Username);
+			socket.emit("logged_in", { user: req.session.Username, email: req.session.correo });
 		});
 	} else {
-		console.log('No hay sesión iniciada'); //En el caso contrario, no iniciamos sesion y mandamos mensaje a pantalla
+		console.log('No hay sesión iniciada');
 	}
 
 	socket.on("login", function (data) {
@@ -73,20 +72,20 @@ io.on('connection', function (socket) {
 		roomID = data.roomID;
 		roomName = data.roomName;
 
-		db.query("SELECT * FROM users WHERE Username=?", [user], function (err, rows, fields) {		//buscamos el usuario en la base de datos
+		db.query("SELECT * FROM users WHERE Username=?", [user], function (err, rows, fields) {
 			if (rows.length == 0) {
-				console.log("El usuario no existe, favor de registrarse!");		//Si no existe se pide al cliente que haga un registro
+				console.log("El usuario no existe, favor de registrarse!");
 			} else {
 				console.log(rows);
 
-				const dataUser = rows[0].Username,			//llena los campos correspondientes al registro de usuarios del chat
+				const dataUser = rows[0].Username,
 					dataPass = rows[0].Password,
 					dataCorreo = rows[0].email;
 
 				if (dataPass == null || dataUser == null) {
 					socket.emit("error");
 				}
-				if (user == dataUser && pass == dataPass) {			//si el usuario estaba registrado entonces mandamos mensaje a pantalla
+				if (user == dataUser && pass == dataPass) {
 					console.log("Usuario correcto!");
 					socket.emit("logged_in", { user: user, email: dataCorreo, room: roomName, roomID: roomID });
 					req.session.userID = rows[0].id;
@@ -109,11 +108,11 @@ io.on('connection', function (socket) {
 	socket.on('historial', function () {
 		console.log('Buscamos historial de la sala: ' + req.session.roomName);
 
-		db.query('SELECT s.nombre_sala, u.Username, m.mensaje FROM mensajes m INNER JOIN salas s ON s.id = m.sala_id INNER JOIN users u ON u.id = m.user_id WHERE m.sala_id = ' + 
-		req.session.roomID + ' ORDER BY m.id ASC', function (err, rows, fields) {
-			socket.emit('armadoHistorial', rows);
-			console.log(rows);
-		});
+		db.query('SELECT s.nombre_sala, u.Username, m.mensaje FROM mensajes m INNER JOIN salas s ON s.id = m.sala_id INNER JOIN users u ON u.id = m.user_id WHERE m.sala_id = ' +
+			req.session.roomID + ' ORDER BY m.id ASC', function (err, rows, fields) {
+				socket.emit('armadoHistorial', rows);
+				console.log(rows);
+			});
 	});
 
 	socket.on('addUser', function (data) {
@@ -123,13 +122,13 @@ io.on('connection', function (socket) {
 
 		if (user != "" && pass != "" && email != "") {
 			console.log("Registrando el usuario: " + user);
-			db.query("INSERT INTO users(`Username`, `Password`, `email`) VALUES(?, ?, ?)", [user, pass, email], function (err, result) {  //Añadimos los valores del usuario a la base de datos
+			db.query("INSERT INTO users(`Username`, `Password`, `email`) VALUES(?, ?, ?)", [user, pass, email], function (err, result) {
 				if (!!err)
 					throw err;
 
 				console.log(result);
 
-				console.log('Usuario ' + user + " se dio de alta correctamente!."); //Avisamos al usuario que su registro fue un éxito
+				console.log('Usuario ' + user + " se dio de alta correctamente!.");
 				socket.emit('UsuarioOK');
 			});
 		} else {
@@ -150,7 +149,7 @@ io.on('connection', function (socket) {
 		bottxt('cambioSala');
 	});
 
-	socket.on('mjsNuevo', function (data) { // Funcion para el mensaje
+	socket.on('mjsNuevo', function (data) {
 
 		// id de la sala
 
@@ -211,26 +210,26 @@ io.on('connection', function (socket) {
 		}
 	}
 
-	app.post('/auth', function (request, response) {//Recibimos la autenticacion
-		var username = request.body.username;	//se obtienen datos del usuario
+	app.post('/auth', function (request, response) {
+		var username = request.body.username;
 		var password = request.body.password;
 
-		if (username && password) { //Se revisa si los datos estan vacíos o no
+		if (username && password) {
 
-			//Se realiza una consulta para checar usuario y passwd
+
 			connnection.query('SELECT * FROM users WHERE username = ? AND password = ?'[username, password], function (err, results, fields) {
 				if (results.length > 0) {
-					request.session.loggedin = true; //asignamos true al loggedin
+					request.session.loggedin = true;
 					request.session.username = username;
-					response.redirect('/home'); //Redireccionamos a la ruta de home
-				} else { //Si el result da 0, el usuario no se encontro y mandamos mensaje a pantalla
+					response.redirect('/home');
+				} else {
 					response.send('Usuarios y/o contraseña incorrectos');
 				}
 				response.end();
 			});
 		} else {
 			response.send('Ingresa usuario y contraseña');
-			response.end(); //Terminamos el proceso
+			response.end();
 		}
 	});
 });

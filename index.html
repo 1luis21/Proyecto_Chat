@@ -14,6 +14,7 @@
 
 
     <!-- Bootstrap core CSS -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
@@ -171,7 +172,8 @@
     <link href="signin.css" rel="stylesheet">
 </head>
 
-<body class="text-center">
+<body class="text-center"
+    style="background-image: url(https://www.wallpapertip.com/wmimgs/80-807358_fondos-degradados-colores-claros.jpg); background-repeat: no-repeat;">
     <main class="form-signin">
         <h1 class="h2 mb-3 fw-normal">Iniciar sesión</h1>
 
@@ -197,22 +199,22 @@
         <p class="mt-5 mb-3 text-muted">&copy; Chat NodeJS and Socket.io</p>
     </main>
 
-    <div id="wrapper" style="display: none;" class="background-color: #9BD8FB">
+    <div id="wrapper" style="display: none; background-color: #2B2A33;">
         <div id="menu">
-            <p class="bienvenido"> Bienvenido, <b id="usernameTag"></b>, Correo: <b id="emailUser">,</b>, a la sala:
+            <p class="bienvenido" style="color: #EBF4FB;"> Bienvenido, <b id="usernameTag"></b>, Correo: <b
+                    id="emailUser">,</b>, a la sala:
                 <b id="SalaNombre"></b>
             </p>
-            <p class="logout "><a id="exit" href="/">Salir del chat</a></p>
+            <p class="logout"><a id="exit" href="/" class="btn btn-sm btn-outline-danger">Salir del chat</a></p>
         </div>
 
-        <div id="chatbox">
+        <div id="chatbox" style="background-color: #222;">
             <!-- Caja del chat que contendrá todos los mensajes. -->
         </div>
 
         <input name="usermsg" type="text" id="mensaje" size="75" />
-        <input class="btn btn-sm btn-outline-info" type="button" name="submitmsg" id="enviarMensaje"
-            value="Enviar Mensaje" />
-        <select class="form-group btn btn-sm btn-outline-secondary" name="roomsCambio" id="roomsCambio">
+        <input class="btn btn-sm btn-info" type="button" name="submitmsg" id="enviarMensaje" value="Enviar Mensaje" />
+        <select class="form-group btn btn-sm btn-secondary" name="roomsCambio" id="roomsCambio">
             <option selected>Cambiar de sala</option>
         </select>
     </div>
@@ -232,7 +234,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="userNameR" placeholder="name@example.com"
+                        <input required type="text" class="form-control" id="userNameR" placeholder="name@example.com"
                             name="username" required>
                         <label for="floatingInput">Nombre de usuario</label>
                     </div>
@@ -271,7 +273,7 @@
     <script>
         $(document).ready(function () {
 
-            var socket = io();  /*declaramos el socket*/
+            var socket = io();
             let salas = [];
             socket.emit('getSalas');
 
@@ -305,11 +307,11 @@
                 console.log('cambio select a ID: ' + roomID + ' con nombre: ' + roomName);
             });
 
-            /*comienza a funcionar al hacer click en entrar,mandando los datos a su respectiva funcion en forma de arreglo*/
+
             $("#Login").click(function () {
                 socket.emit("login", {
-                    user: $("#userName").val(), /*define los valores de los id*/
-                    pass: $("#Password").val(), /*define lso valores de los id*/
+                    user: $("#userName").val(),
+                    pass: $("#Password").val(),
                     roomID: $('#rooms').find('option:selected').attr('id'),
                     roomName: $('#rooms').find('option:selected').text()
                 });
@@ -317,43 +319,43 @@
             });
 
             $("#sendResgistro").click(function () {
-                socket.emit("addUser", { /*se mandan los valores del registro*/
+                socket.emit("addUser", {
                     user: $("#userNameR").val(),
                     pass: $("#PasswordR").val(),
                     email: $("#correo").val(),
                 });
             });
 
-            $(".logout").click(function () { /*salimos*/
+            $(".logout").click(function () {
                 socket.emit("salir");
             });
 
-            $('#registrar').click(function () { /*se obtienen los valores del registro*/
+            $('#registrar').click(function () {
                 $("#userNameR").val("");
                 $("#PasswordR").val("");
                 $("#correo").val("");
             });
 
             $('#enviarMensaje').click(function () {
-                if ($("#mensaje").val().length <= 0) { /*evalua que se este enviandoa algo*/
+                if ($("#mensaje").val().length <= 0) {
                     alert("Escribe el mensaje para poderlo enviar.");
                 } else {
                     var mensaje = $('#mensaje').val()
-                    socket.emit('mjsNuevo', mensaje); // Enviamos el nuevo mensaje a la función de mensaje nuevo.
+                    socket.emit('mjsNuevo', mensaje);
 
                 }
             });
 
             socket.on("logged_in", function (data) {
                 console.log(data);
-                $(".form-signin").hide(); /*se esconde el formulario de inicio de sesión*/
-                $("#wrapper").show(); /*se muetsra la ventana del chat*/
+                $(".form-signin").hide();
+                $("#wrapper").show();
                 $('#usernameTag').text(data.user);
                 $('#emailUser').text(data.email);
                 $('#SalaNombre').text(data.roomName);
                 socket.emit('historial');
             });
-            /*sirven para verificar campos y mostrar que hace falta*/
+
             socket.on("invalido", function () {
                 alert("Usuario y/o contraseña incorrectos.");
             });
@@ -365,19 +367,19 @@
             socket.on("vacio", function () {
                 alert("Error: Llena todos las campos.!");
             });
-            /********************************************/
-            socket.on("UsuarioOK", function () { /*se muestra al aceptarse el registro del usuario*/
+
+            socket.on("UsuarioOK", function () {
                 $('#registro').modal('hide');
                 alert("Dado de alta correctamente.");
             });
 
-            socket.on('mensaje', function (data) { // Función que tiene de respuesta el nuevo mensaje, concatenamos e insertamos en la caja de chat.
+            socket.on('mensaje', function (data) {
                 if (data.usuario == "BotChat") {
-                    var nuevoMensaje = '<small class="bot"><b>' + data.usuario + ' -</b> ' + data.mensaje + '</small>';
+                    var nuevoMensaje = '<small class="bot" style="color: #F5F5F5;"><b>' + data.usuario + ' -</b> ' + data.mensaje + '</small>';
                     $('#chatbox').append(nuevoMensaje + '</br>');
                     $('#mensaje').val("");
                 } else {
-                    var nuevoMensaje = '<p class="mensajeEnviado"><b>' + data.usuario + ' dice:</b> ' + data.mensaje + '</p>';
+                    var nuevoMensaje = '<p class="mensajeEnviado" style="color: #F5F5F5;"><b>' + data.usuario + ' dice:</b> ' + data.mensaje + '</p>';
                 }
                 $('#chatbox').append(nuevoMensaje + '</br>');
                 $('#mensaje').val("");
@@ -386,10 +388,10 @@
             socket.on('armadoHistorial', function (data) {
                 var historial = "";
                 $.each(data, function (id, val) {
-                    historial += '<p class= "mensajeEnviado"><b>' + data[id]['Username'] + ' dijo:</b> ' + data[id]['mensaje'] + '</p>';
+                    historial += '<p class= "mensajeEnviado" style="color: #F5F5F5;"><b>' + data[id]['Username'] + ' dijo:</b> ' + data[id]['mensaje'] + '</p>';
                 });
 
-                historial += '<small class="bot"><b>BotChat -</b> Últimos mensajes del historial de la sala</samll>';
+                historial += '<small class="bot" style="color: #F5F5F5;"><b>BotChat -</b> Últimos mensajes del historial de la sala</samll>';
 
                 $('#chatbox').append(historial + '</br>');
             });
